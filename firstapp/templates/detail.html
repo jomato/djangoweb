@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load blog_tags %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>first web</title>
+        <link rel="stylesheet" href="{% static 'css/semantic.css' %}"  media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="{% static 'css/friendly.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Oswald|Raleway" rel="stylesheet">
+
+
+        <style type="text/css">
+            h1 {
+                font-family:'Oswald', sans-serif!important;
+                font-size:40px;
+            }
+
+            body {
+                font-family: 'Raleway', sans-serif;
+            }
+            p {
+                font-family: 'Raleway', sans-serif;
+                font-size:18px;
+            }
+            .ui.vertical.segment.masthead {
+                height: 300px;
+                background-image: url({% static 'images/back.jpeg' %});
+                background-size: cover;
+                background-position: 100% 80%;
+            }
+
+            .ui.container.segment {
+                width: 800px;
+            }
+
+            .ui.center.aligned.header.blogslogon {
+                margin-top: 40px;
+            }
+
+            .ui.center.aligned.header.blogslogon p {
+                margin-top: 10px;
+                color: white;
+                font-size: 10px;
+            }
+            .ui.container.nav {
+                width: 500px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="ui inverted vertical  segment masthead">
+
+            <h1 class="ui center aligned header blogslogon" style="font-size:50px;font-family: 'Raleway', sans-serif!important;">
+                <a href="{% url 'blog:index' %}" style="color: white">Bloger</a>
+                <p class="ui sub header">
+                    everyone has a story to tell
+                </p>
+
+            </h1>
+        </div>
+        <div class="ui container nav">
+            <div class="ui borderless three item menu ">
+                <div class="ui simple dropdown item">
+                    分类
+                    <i class="dropdown icon"></i>
+                    {% get_categories as category_list %}
+                    <div class="menu">
+                        {% for category in category_list %}
+                        <a class="item" href="{% url 'blog:category' category.id %}">{{ category.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="ui simple dropdown  item">
+                    归档
+                    <i class="dropdown icon"></i>
+                    {% archives as date_list %}
+                    <div class="menu">
+                        {% for date in date_list %}
+                        <a class="item" href="{% url 'blog:archives' date.year date.month %}">{{ date.year}} 年
+                            {{ date.month }} 月</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <a class="item" href="http://weibo.com/u/2085776841">
+                    作者
+                </a>
+
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <div class="ui  vertical segment">
+                <div class="ui container vertical segment">
+                        <h1 class="ui header center aligned">
+                            {{ post.headline }}
+                        </h1>
+                    <br/>
+                    <div class="icon grey small unhide"><h4>·{{ post.created_time.year }}年
+                        {{ post.created_time.month }}月</h4></div>
+                    <br/>
+                    <br/>
+                    {{ post.content|safe}}
+                    <div class="ui mini  tag label">
+                        <a href="{% url 'blog:category' post.category.id %}">{{ post.category }}</a>
+                    </div>
+                    <div>
+                        <br/>
+                    </div>
+                    <form action="{% url 'comments:post_comment' post.id %}" method="post" class="ui mini equal width form">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="field">
+                            <label for="{{ form.name.id_for_label }}">Name:</label>
+                            {{ form.name }}
+                            {{ form.name.errors }}
+                        </div>
+                        <div class="field">
+                            <label for="{{ form.email.id_for_label }}">Email:</label>
+                            {{ form.email }}
+                            {{ form.name.errors }}
+                        </div>
+                        <div class="col-md-12">
+                            <label for="{{ form.text.id_for_label }}">评论:</label>
+                            {{ form.text }}
+                            {{ form.text.errors }}
+                        <button type="submit"><span>发表</span></button>
+                        </div>
+                    </div>    <!-- row -->
+                    </form>
+                    <div>
+                        <br/>
+                    </div>
+                    <div class="comment-list">
+                        <h2>评论列表</h2>
+                        <ul class="list-unstyled">
+                        {% for comment in comment_list %}
+                            <li class="comment-item">
+                                <span class="name">{{ comment.name }}</span>
+                                <time class="date">{{ comment.created_time }}</time>
+                                <div class="text">
+                                {{ comment.text }}
+                                </div>
+                            </li>
+                        {% empty %}
+                        暂无评论
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            　　<div class="ui text item menu">
+                    <div class="">Authored By JH·<a href="https://github.com/jomato">Github</a>
+                    </div>
+                </div>
+
+        </div>
+
+    </body>
+</html>

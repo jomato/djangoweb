@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load blog_tags %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>first web</title>
+        <link rel="stylesheet" href="{% static 'css/semantic.css' %}"  media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="{% static 'css/friendly.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Oswald|Raleway" rel="stylesheet">
+
+
+        <style type="text/css">
+            h1 {
+                font-family:'Oswald', sans-serif!important;
+                font-size:40px;
+            }
+
+            body {
+                font-family: 'Raleway', sans-serif;
+            }
+            p {
+                font-family: 'Raleway', sans-serif;
+                font-size:18px;
+            }
+            .ui.vertical.segment.masthead {
+                height: 300px;
+                background-image: url({% static 'images/back.jpeg' %});
+                background-size: cover;
+                background-position: 100% 80%;
+            }
+
+            .ui.container.segment {
+                width: 800px;
+            }
+
+            .ui.center.aligned.header.blogslogon {
+                margin-top: 40px;
+            }
+
+            .ui.center.aligned.header.blogslogon p {
+                margin-top: 10px;
+                color: white;
+                font-size: 10px;
+            }
+            .ui.container.nav {
+                width: 500px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="ui inverted vertical  segment masthead">
+
+            <h1 class="ui center aligned header blogslogon" style="font-size:50px;font-family: 'Raleway', sans-serif!important;">
+                <a href="{% url 'blog:index' %}" style="color: white">Bloger</a>
+                <p class="ui sub header">
+                    everyone has a story to tell
+                </p>
+
+            </h1>
+        </div>
+        <div class="ui container nav">
+            <div class="ui borderless three item menu ">
+                <div class="ui simple dropdown item">
+                    分类
+                    <i class="dropdown icon"></i>
+                    {% get_categories as category_list %}
+                    <div class="menu">
+                        {% for category in category_list %}
+                        <a class="item" href="{% url 'blog:category' category.id %}">{{ category.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="ui simple dropdown  item">
+                    归档
+                    <i class="dropdown icon"></i>
+                    {% archives as date_list %}
+                    <div class="menu">
+                        {% for date in date_list %}
+                        <a class="item" href="{% url 'blog:archives' date.year date.month %}">{{ date.year}} 年
+                            {{ date.month }} 月</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <a class="item" href="http://weibo.com/u/2085776841">
+                    作者
+                </a>
+
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+
+
+        <div class="ui  vertical segment">
+            {% for artical in artical_list %}
+                <div class="ui container vertical segment">
+                    <a href="{{ artical.get_absolute_url }}">
+                        <h1 class="ui header center aligned">
+                            {{ artical.headline }}
+                        </h1>
+                    </a>
+                    <br/>
+                    <div class="icon grey small unhide ">{{ artical.created_time.year }}年{{ artical.created_time.month }}月</div>
+                    <br/>
+                    <div>{{ artical.content|truncatewords:35|safe }}</div>
+                    <div>
+                        <a href="{{ artical.get_absolute_url }}">
+                            <i class="angle tiny double grey right icon">READMORE</i>
+                        </a>
+                    </div>
+                    <br/>
+                    <div class="ui mini  tag label">
+                        <a href="{% url 'blog:category' artical.category.id %}">{{ artical.category }}</a>
+                    </div>
+                </div>
+            {% endfor %}
+            <br/>
+            <div class="ui borderless text item menu">
+                <div class="">Authored By JH·<a href="https://github.com/jomato">Github</a>
+                </div>
+            </div>
+
+        </div>
+
+    </body>
+</html>
